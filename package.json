@@ -11,14 +11,16 @@
   "dependencies": {
     "@zoom/meetingsdk": "^3.1.6",
     "axios": "^1.6.7",
-    "dotenv": "^16.4.1",
     "jsonwebtoken": "^9.0.2",
+    "jsrsasign": "^11.1.0",
+    "jsrsasign-util": "^1.0.5",
     "next": "14.1.0",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",
+    "dotenv": "^16.4.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
     "postcss": "^8",
