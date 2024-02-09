@@ -1,7 +1,11 @@
+require('dotenv').config({
+  path: '../.env',
+})
 import jwt from 'jsonwebtoken'
 
 export function getApiKey() {
   return process.env.ZOOM_API_KEY
+
 }
 
 export function getToken(meetingNumber) {

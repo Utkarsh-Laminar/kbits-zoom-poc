@@ -1,28 +1,34 @@
-'use client'
+"use client"
 
-import { ZoomMtg } from '@zoom/meetingsdk';
+import { fetchMeetingData } from '@/lib/fetchMeetingData';
+import { userConfig } from '@/lib/userConfig';
+import { useEffect, useState } from 'react';
 
 const Meeting = () => {
-const meetingNumber =2628145555;
-const userName ="Utkarsh";
-const email ="utkarsh.gangurde@lamin.ar";
-const passWord ="Kbits123"
-const leaveUrl=`${window.location.href}`;
+const {meetingNumber,userName,userEmail,passWord,leaveUrl} = userConfig;
+const [token,setToken] = useState(null);
+const[sdkKey,setSdkKey] = useState(null);
 
-  async function startMeeting() {
+  useEffect(()=>{
+    const init = async() =>{
+      const {ZoomMtg} = await import('@zoom/meetingsdk')
+      const {sdkKey,token} = await fetchMeetingData();
+        // console.log(`USEFFECT Token: ${token}`);
+        // console.log(`USEEFFECT SdkKey: ${sdkKey}`);
+       setToken(token);
+       setSdkKey(sdkKey);
+    }
+    init();
+  },[])
+  
+   function startMeeting() {
+    if (!token || !sdkKey) {
+      console.error('Meeting data not available');
+      return;
+    }
+    try {
     ZoomMtg.preLoadWasm()
     ZoomMtg.prepareWebSDK()
-
-    const response = await fetch('/api/zoom', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        meetingNumber: meetingNumber,
-      })
-    });
-      const data = await response.json();
-     const {token,sdkKey} = data;
-     console.log(`Token${token}`);
     ZoomMtg.init({
       leaveUrl: leaveUrl,
        patchJsMedia: true,
@@ -35,7 +41,7 @@ const leaveUrl=`${window.location.href}`;
           meetingNumber: meetingNumber,
           passWord: passWord,
           userName: userName,
-          userEmail: email,
+          userEmail: userEmail,
           success: (success) => {
             console.log("Meeting joined successfully:", success);   
           },
@@ -48,6 +54,10 @@ const leaveUrl=`${window.location.href}`;
         console.log("Error initializing Zoom Meeting SDK:", error);
       }
     })
+    } catch (error) {
+      console.log(`Error: ${error}`);
+    }
+    
   }
   return (
   <div className="m-auto text-center">
